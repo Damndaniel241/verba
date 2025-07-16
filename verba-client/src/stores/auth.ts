@@ -31,8 +31,9 @@ export const useAuthStore = defineStore('auth',()=>{
 
           async function getUser(){
   try{
+    if(userId){
     const response = await axios.get(`http://127.0.0.1:8000/user/${userId}`);
-    owner.value = response.data.data
+    owner.value = response.data.data}
   }catch(error){
     console.error("error retreiving user", error)
   }

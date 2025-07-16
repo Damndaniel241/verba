@@ -52,7 +52,7 @@ function handleSend() {
   console.log(`is user id(${auth.userId}) same as recipient(${currentRecipient.recipientObj.id}) ? = `, auth.userId !== currentRecipient.recipientObj.id);
   
   
-  didYouSend.value = true;
+  // didYouSend.value = true;
   const content = newMessage.value.trim();
   if (!content) return;
   chat.sendMessage(content); // ⬅️ Actually send to WebSocket
@@ -70,11 +70,11 @@ function handleSend() {
      
       <!-- <MessageItem is-left-aligned /> -->
       <!-- <MessageItem/> -->
-        <div v-for="(msg, index) in chat.messages" :key="index" class="">
       <!-- {{ msg.message }} -->
-       <!-- <MessageItem  is-left-aligned="auth.userId != currentRecipient.recipientObj.id" messenger={{ currentRecipient.recipientObj.user_name }} content={{ msg.message }} />
+      <!-- <MessageItem  is-left-aligned="auth.userId != currentRecipient.recipientObj.id" messenger={{ currentRecipient.recipientObj.user_name }} content={{ msg.message }} />
       <MessageItem content={{ msg.message }} /> -->
-
+      
+      <div v-for="(msg, index) in chat.messages" :key="index" class="">
         <div v-if="!didYouSend" class="flex gap-3 items-end">
            <div class="">
         <img class="h-8 w-8 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/87.jpg">

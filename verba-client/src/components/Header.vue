@@ -24,7 +24,7 @@ async function logout() {
     )
     console.log('logout response data = ', response.data)
     auth.clearToken()
-    router.push({ name: 'signin' })
+   await router.push({ name: 'signin' })
   } catch (error) {
     console.error('error logging out', error)
   }

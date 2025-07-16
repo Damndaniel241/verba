@@ -4,6 +4,7 @@ import Header from '@/components/Header.vue'
 import { AvatarFallback, AvatarImage, AvatarRoot } from 'radix-vue'
 import SidebarChatList from './SidebarChatList.vue'
 import MessageList from './MessageList.vue'
+import MessageList2 from './MessageList2.vue'
 import BlankVerba from '@/components/BlankVerba.vue'
 import { useClickedPages } from '@/stores/clickedpages'
 import { storeToRefs } from 'pinia'
@@ -11,6 +12,7 @@ import { useAuthStore } from '@/stores/auth'
 import { watch } from 'vue'
 import { useChatStore } from '@/stores/useChatStore'
 import { useRoute } from 'vue-router'
+
 
 const clickedpages = useClickedPages();
 const auth = useAuthStore();
@@ -42,7 +44,8 @@ const {blankVerbaIsPresent} = storeToRefs(clickedpages)
   <div class="grid grid-cols-4 h-screen ">
 <SidebarChatList/>
 <BlankVerba v-if="blankVerbaIsPresent"/>
-<MessageList v-else/>
+<!-- <MessageList v-else/> -->
+<MessageList2 v-else/>
   </div>
   <!-- <div class="grid grid-flow-col grid-rows-3 h-screen">
   <div class="row-span-3 col-span-1  bg-red-500">01</div>

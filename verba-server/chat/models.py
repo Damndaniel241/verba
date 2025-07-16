@@ -26,7 +26,7 @@ class Message(models.Model):
     sender_id = models.ForeignKey(NewUser,null=True,on_delete=models.SET_NULL,related_name='sent_messages')
     # participants = models.ManyToManyField(NewUser, related_name="chat_rooms")
     # recipient_id = models.ForeignKey(NewUser,null=True,on_delete=models.SET_NULL,related_name='received_messages')
-    content = models.TextField(max_length=500)
+    content = models.TextField(max_length=5000)
     timestamp = models.DateTimeField(auto_now_add=True)
     
     

@@ -17,7 +17,7 @@ const roomId = ref<string>("");
 
 const {blankVerbaIsPresent} = storeToRefs(clickedpages);
 // const {changeBlankVerba} = storeToRefs(clickedpages);
-const currentRecipient = useCurrentRecipient();
+let currentRecipient = useCurrentRecipient();
 
 
 const auth = useAuthStore();
@@ -26,25 +26,26 @@ const chat = useChatStore();
 console.log("the current recipient =",currentRecipient);
 
 
-async function createRoomId(){
+async function createRoomId(recipient:number){
   try{
   const response = await axios.post("http://127.0.0.1:8000/chat/create-room-id/",{
-    recipient_id:currentRecipient.recipientObj.id
+    recipient_id:recipient
   },{
     headers:{
       Authorization:`JWT ${auth.access_token}`
     }
   });
-  roomId.value = response.data.data.id;
-  room.currentRoomId = response.data.data.id;
+  // roomId.value = response.data.data.id;
+  // room.currentRoomId = response.data.data.id;
 
-  console.log("Current recpient baby ",currentRecipient.recipientObj);
+  // room.setCurrentRoomId(response.data.data.id);
+  // console.log("Current recpient baby ",currentRecipient.recipientObj);
   
   console.log("roomID = ",roomId.value);
-  chat.connect(roomId.value,auth.access_token)
+  // chat.connect(roomId.value,auth.access_token)
 
 
-  
+  return response.data.data.id;
 
   }catch(err){
     console.error("err creating room id ",err)
@@ -53,7 +54,7 @@ async function createRoomId(){
 
    function changeBlankVerba(userObj:{}){
      blankVerbaIsPresent.value = false;
-    createRoomId();
+    // createRoomId();
 
         // update route param *without* reloading component
   // router.replace({
@@ -74,15 +75,29 @@ async function createRoomId(){
     
 
 
+let userList = ref<[]>([]);
 
-// console.log("sidebar = ",auth.access_token);
-// console.log("user_id = ",auth.userId);
-const userList = ref<[]>([]);
-
-function getRecipientObj(userObj:{}){
+ function getRecipientObj(userObj:{},roomID:string){
+  // createRoomId();
+  if (chat.socket?.onopen){
+  chat.disconnect();
+  }
+   blankVerbaIsPresent.value = false;
   currentRecipient.selectRecipient(userObj);
   console.log("ihave gotten recipient id oooo = ",userObj);
     console.log("therefore recipient id is ",currentRecipient.recipientObj.id);
+    
+    chat.connect(roomID,auth.access_token)
+
+  //     const response = await axios.post("http://127.0.0.1:8000/chat/create-room-id/",{
+  //   recipient_id:currentRecipient.recipientObj.id
+  // },{
+  //   headers:{
+  //     Authorization:`JWT ${auth.access_token}`
+  //   }
+  // });
+  //  room.setCurrentRoomId(response.data.data.id);
+  //   chat.connect(response.data.data.id,auth.access_token)
   
 }
 
@@ -91,6 +106,17 @@ async function getUsers(){
   try{
     const response = await axios.get("http://127.0.0.1:8000/user/users/");
     userList.value = response.data.data
+    console.log("users list old = ",userList.value);
+    for (let userObj of userList.value){
+      const roomIdForObj = await createRoomId(userObj.id);
+      userObj.roomId = roomIdForObj;
+      currentRecipient.recipientObj.roomId = roomIdForObj;
+      
+    }
+
+    console.log("users list new = ",userList.value);
+    
+    
   }catch(error){
     console.log("error retreiving all users", error)
   }
@@ -109,7 +135,7 @@ getUsers();
         <span class="pi pi-search ms-2"></span>
         <input class="h-[2.4em] focus-within:outline-none" type="text" placeholder="Search" />
       </div>
-      <div v-show="auth.userId !== item.id" v-for="item in userList" :key="item.user_name" @mouseover="getRecipientObj(item)" @click="changeBlankVerba(item)" class="flex items-center gap-3 hover:bg-[#F0F2F5] cursor-pointer">
+      <div v-show="auth.userId !== item.id" v-for="item in userList" :key="item.user_name"  @click="getRecipientObj(item,item.roomId)"  class="flex items-center gap-3 hover:bg-[#F0F2F5] cursor-pointer">
        <div class="">
         <img class="h-14 w-14 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/87.jpg">
     </div>
